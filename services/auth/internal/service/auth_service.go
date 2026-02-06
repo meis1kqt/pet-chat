@@ -1,7 +1,8 @@
 package service
 
 import (
-	"chat-app/services/auth/internal/domain/models"
+	"chat-app/internal/models"
+	"chat-app/pkg/jwt"
 	"context"
 	"errors"
 	"log/slog"
@@ -19,13 +20,15 @@ type AuthService struct {
 	log      *slog.Logger
 	storage  Storage
 	tokenTTL time.Duration
+	jwtSecret string
 }
 
-func NewAuthService(log slog.Logger, storage Storage, TokenTTL time.Duration) *AuthService {
+func NewAuthService(log slog.Logger, storage Storage, TokenTTL time.Duration, jwtSecret string) *AuthService {
 	return &AuthService{
 		log:      &log,
 		storage:  storage,
 		tokenTTL: TokenTTL,
+		jwtSecret: jwtSecret,
 	}
 }
 
@@ -54,4 +57,31 @@ func (a *AuthService) RegisterNewUser(ctx context.Context, email string, passwor
 	}
 
 	return id, nil
+}
+
+
+func (a *AuthService) Login(ctx context.Context, email string, password string) (string, error) {
+
+	a.log.Info("staring login user")
+
+	user, err := a.storage.GetUser(ctx, email)
+
+	if err != nil {
+		a.log.Error("get user error", "error", err)
+		return "", err
+	}
+
+	if err := bcrypt.CompareHashAndPassword(user.PassHash, []byte(password)); err != nil {
+		a.log.Error("password","error", err)
+		return "", err
+	}
+
+	token, err := jwt.NewToken(user, a.tokenTTL, a.jwtSecret)
+
+	if err != nil {
+		a.log.Error("token error", "error", err)
+		return "", err
+	}
+
+	return token, nil
 }
