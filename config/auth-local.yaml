@@ -1,0 +1,11 @@
+env: "local"
+http_server:
+  addr: ":8080"
+  timeout: 10s
+  idle_timeout: 100s
+database:
+  host: "localhost"
+  port: "5432"
+  user: "postgres"
+  password: "postgres"
+  db_name: "auth_db" 
