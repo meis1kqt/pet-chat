@@ -60,7 +60,7 @@ func (a *AuthService) RegisterNewUser(ctx context.Context, email string, passwor
 }
 
 
-func (a *AuthService) Login(ctx context.Context, email string, password string) (string, error) {
+func (a *AuthService) Login(ctx context.Context, email string, password string) (token string, userID int64, err error) {
 
 	a.log.Info("staring login user")
 
@@ -68,20 +68,20 @@ func (a *AuthService) Login(ctx context.Context, email string, password string) 
 
 	if err != nil {
 		a.log.Error("get user error", "error", err)
-		return "", err
+		return "", 0, err
 	}
 
 	if err := bcrypt.CompareHashAndPassword(user.PassHash, []byte(password)); err != nil {
 		a.log.Error("password","error", err)
-		return "", err
+		return "", 0,  err
 	}
 
-	token, err := jwt.NewToken(user, a.tokenTTL, a.jwtSecret)
+	token, err = jwt.NewToken(user, a.tokenTTL, a.jwtSecret)
 
 	if err != nil {
 		a.log.Error("token error", "error", err)
-		return "", err
+		return "", 0 , err
 	}
 
-	return token, nil
+	return token, user.ID,  nil
 }
