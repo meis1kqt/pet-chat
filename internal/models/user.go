@@ -1,10 +1,9 @@
 package models
 
-import "modernc.org/libc/uuid"
 
 
 type User struct {
-	ID uuid
+	ID int64
 	Email string
 	PassHash []byte
 }

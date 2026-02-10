@@ -23,10 +23,10 @@ type AuthService struct {
 	jwtSecret string
 }
 
-func NewAuthService(log slog.Logger, storage Storage, TokenTTL time.Duration, jwtSecret string) *AuthService {
+func NewAuthService(log *slog.Logger, Storage Storage, TokenTTL time.Duration, jwtSecret string) *AuthService {
 	return &AuthService{
-		log:      &log,
-		storage:  storage,
+		log:      log,
+		storage:  Storage,
 		tokenTTL: TokenTTL,
 		jwtSecret: jwtSecret,
 	}

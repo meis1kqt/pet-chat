@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"chat-app/services/auth/internal/domain/models"
+	"chat-app/internal/models"
 	"context"
 	"fmt"
 
@@ -23,7 +23,7 @@ func (s *Storage) SaveUser(ctx context.Context, email string, passHash []byte) (
 
 	var id int64
 
-	query := "INSERT INTO users (email, passHash) VALUES ($1, $2) returning id"
+	query := "INSERT INTO users (email, pass_hash) VALUES ($1, $2) returning id"
 
 	err := s.pool.QueryRow(ctx, query, email, passHash).Scan(&id)
 
@@ -38,9 +38,9 @@ func (s *Storage) SaveUser(ctx context.Context, email string, passHash []byte) (
 func (s *Storage) GetUser(ctx context.Context, email string) (*models.User, error) {
 	var User models.User
 
-	query := "SELECT id, email, passHash from users WHERE email = $1"
+	query := "SELECT id, email, pass_hash from users WHERE email = $1"
 
-	if err := s.pool.QueryRow(ctx, query, email).Scan(&User.Email, &User.PassHash, &User.ID); err != nil {
+	if err := s.pool.QueryRow(ctx, query, email).Scan(&User.ID, &User.Email, &User.PassHash); err != nil {
 		return &models.User{}, err
 	}
 

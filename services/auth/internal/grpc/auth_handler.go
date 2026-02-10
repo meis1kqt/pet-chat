@@ -1,10 +1,8 @@
-package grpc
+package authgrpc
 
 import (
 	v1pb "chat-app/protos/gen/go/protos/sso/auth"
-	"chat-app/services/auth/internal/grpc"
 	"context"
-	"errors"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
