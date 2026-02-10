@@ -1,0 +1,13 @@
+env: "local"
+grpc:
+  host: "localhost"
+  port: 50051
+database:
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: "jeremy"
+  db_name: "auth_db"
+jwt:
+  secret: "jokada"
+  ttl: 24h
